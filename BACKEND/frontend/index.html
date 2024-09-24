@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My React App</title>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Input Some Data</h1>
+    <form id="data-form">
+      <input type="text" id="data-input" placeholder="Enter some data" />
+      <button type="submit">Submit</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('data-form');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const dataInput = document.getElementById('data-input');
+      const data = dataInput.value.trim();
+
+      try {
+        const response = await fetch('/api/data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data }),
+        });
+
+        const { message } = await response.json();
+        messageDiv.textContent = message;
+        dataInput.value = '';
+      } catch (error) {
+        console.error(error);
+        messageDiv.textContent = 'Error sending data';
+      }
+    });
+  </script>
+</body>
+</html>
